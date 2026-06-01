@@ -1,17 +1,18 @@
 // vars/sonarScan.groovy
 def call(Map config = [:]) {
-    def stageName = config.get('stageName', 'Static Code Analysis')
+    def projectKey = config.get('projectKey', 'java-knative-app')
+    def projectName = config.get('projectName', 'Java Knative App')
     
-    stage(stageName) {
-        // Utilizing the official Jenkins SonarQube plugin environment block
-        withSonarQubeEnv('SonarQube-Local') {
-            echo "🚀 Initiating SonarQube Quality Scanner Analysis..."
+    stage('Static Code Analysis') {
+        withSonarQubeEnv('LocalSonarQube') { // Enforce your synchronized name string
+            echo "🔍 Initiating SonarQube Quality Scanner..."
             
-            // Execute the Maven sonar goal against our local cluster engine
-            sh "./mvnw clean verify sonar:sonar \
-                -Dsonar.projectKey=${config.projectKey} \
-                -Dsonar.projectName=${config.projectName} \
-                -Dsonar.host.url=http://sonarqube-sonarqube.devops-tools.svc.cluster.local:9000"
+            // Switch from ./mvnw to global mvn
+            sh """
+                mvn clean verify sonar:sonar \
+                -Dsonar.projectKey=${projectKey} \
+                -Dsonar.projectName=${projectName}
+            """
         }
     }
 }
