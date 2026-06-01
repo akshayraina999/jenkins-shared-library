@@ -4,7 +4,7 @@ def call(Map config = [:]) {
     def projectName = config.get('projectName', 'Java Knative App')
     
     stage('Static Code Analysis') {
-        withSonarQubeEnv('LocalSonarQube') { // Enforce your synchronized name string
+        withSonarQubeEnv('SonarQube-Local') { // Enforce your synchronized name string
             echo "🔍 Initiating SonarQube Quality Scanner..."
             
             // Switch from ./mvnw to global mvn
